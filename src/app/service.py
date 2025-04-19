@@ -2,6 +2,7 @@ from .req_res import PlayerNameListRespone
 from src.client.configure_bq import ConfigureBigQuery
 from src.queries.fetch_names_query import FetchAllPlayerNamesQuery
 from src.queries.player_compare import PlayerComparisonQuery, PlayerComparisonRequest
+from src.queries.historical_win_loss import HistoricalWinLossQuery, HistoricalWinLossRequest
 from .models import PlayerName
 from .req_res import PlayerComparisonResult
 from google.cloud import bigquery
@@ -42,5 +43,20 @@ class Service:
             raise e 
     
 
+    def historical_win_loss(self, request: HistoricalWinLossRequest):
+        try:
+            query = HistoricalWinLossQuery(request_obj=request)
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("team1_code", "INT", request.team1_code.ncaa_code),
+                     bigquery.ScalarQueryParameter("team2_code", "INT", request.team2_code.ncaa_code)
+                ]
+            )
+            result = self.client.execute_query(query=query.get_query(), job_config=job_config)
+    
+            return [dict(row) for row in result] 
+    
+        except Exception as e :
+            raise e 
         
     
