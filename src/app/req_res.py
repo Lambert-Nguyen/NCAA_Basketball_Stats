@@ -97,8 +97,8 @@ class HistoricalWinLossResults(BaseModel):
 
 class StdResponse(BaseModel):
     message: str
-    error: str | None = None
-    data: dict | None = None
+    error: Optional[str]
+    data: Optional[dict]
     status_code: int
     success: bool
     
