@@ -1,6 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel
-from .models import PlayerName
+from .models import PlayerName, TeamCode
 
 """ Add req res models here """
 
@@ -60,13 +60,45 @@ class PlayerNameListRespone(BaseModel):
             each representing a player's full name.
     """
     players: List[PlayerName]
+    
+    
+
+class HistoricalWinLossRequest(BaseModel):
+    """
+    Request model for comparing two players.
+
+    This model is used to encapsulate the names of the two players 
+    that will be compared using the PlayerComparisonQuery. It ensures 
+    that the player names are provided in a structured and validated manner.
+
+    Attributes:
+        player1_name (PlayerName): The full name of the first player.
+        player2_name (PlayerName): The full name of the second player.
+    """
+    team1_code: TeamCode
+    team2_code: TeamCode
 
 
+
+class HistoricalWinLossResults(BaseModel):
+    """
+    Data model for player comparison results.
+
+    This model is used to structure the data returned 
+    after running a PlayerComparison BigQuery query. 
+    It facilitates easy access and manipulation of the 
+    comparison data in a structured format.
+    """
+    
+    wins: Optional[int] = None
+    losses: Optional[int] = None
+
+    
 
 class StdResponse(BaseModel):
     message: str
-    error: str | None = None
-    data: dict | None = None
+    error: Optional[str]
+    data: Optional[dict]
     status_code: int
     success: bool
     

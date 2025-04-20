@@ -16,4 +16,18 @@ class PlayerName(BaseModel):
     """
     full_name: str
 
+class TeamCode(BaseModel):
+    
+    """
+    Model for storing a team's NCAA code.
 
+    This model is used to represent a team's NCAA code 
+    as retrieved from a BigQuery result. It is designed to 
+    handle a single player name and is particularly useful 
+    when fetching a list of player names.
+
+    Attributes:
+        team_code (int): The NCAA code that represents the team
+        can be found here: https://stats.ncaa.org/game_upload/team_codes
+    """
+    ncaa_code: int
