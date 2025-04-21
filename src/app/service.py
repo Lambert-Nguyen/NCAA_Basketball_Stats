@@ -5,7 +5,7 @@ from src.queries.player_compare import PlayerComparisonQuery, PlayerComparisonRe
 from src.queries.historical_win_loss import HistoricalWinLossQuery, HistoricalWinLossRequest
 from src.queries.team_performance import TeamPerformanceQuery, TeamPerformanceRequest
 from .models import PlayerName
-from .req_res import PlayerComparisonResult, TeamPerformanceListResponse, TopTeamsResponse, TeamPerformanceResponse
+from .req_res import PlayerComparisonResult
 from .req_res import TeamPerformanceListResponse, TopTeamsResponse, TeamPerformanceResponse
 
 from google.cloud import bigquery
