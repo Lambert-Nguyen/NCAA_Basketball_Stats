@@ -93,6 +93,58 @@ class HistoricalWinLossResults(BaseModel):
     wins: Optional[int] = None
     losses: Optional[int] = None
 
+class TeamPerformanceRequest(BaseModel):
+    """Request model for team performance analysis.
+    
+    Attributes:
+        season (int): The season year to analyze (default: 2015)
+        team_name (Optional[str]): Name of the team to analyze
+        limit (Optional[int]): Number of teams to return (default: 10)
+        query_type (Optional[str]): Type of analysis (default: "all")
+    """
+    season: int = 2015
+    team_name: Optional[str] = None
+    limit: Optional[int] = 10
+    query_type: Optional[str] = "all"  # can be "all", "offensive", or "defensive"
+
+class TeamPerformanceResponse(BaseModel):
+    """Response model for team performance metrics.
+    
+    Attributes:
+        team_name (str): Name of the team
+        season (int): Season year
+        win_percentage (float): Team's win percentage
+        avg_points_scored (float): Average points scored per game
+        avg_points_allowed (float): Average points allowed per game
+        points_per_possession (float): Points scored per possession
+        offensive_efficiency (float): Offensive efficiency rating
+        defensive_efficiency (float): Defensive efficiency rating
+    """
+    team_name: Optional[str] = None
+    season: Optional[int] = None
+    win_percentage: Optional[float] = None
+    avg_points_scored: Optional[float] = None
+    avg_points_allowed: Optional[float] = None
+    points_per_possession: Optional[float] = None
+    offensive_efficiency: Optional[float] = None
+    defensive_efficiency: Optional[float] = None
+
+class TeamPerformanceListResponse(BaseModel):
+    """Response model for list of team performances.
+    
+    Attributes:
+        teams (List[TeamPerformanceResponse]): List of team performance metrics
+    """
+    teams: List[TeamPerformanceResponse]
+
+class TopTeamsResponse(BaseModel):
+    """Response model for top teams list.
+    
+    Attributes:
+        team (Optional[TeamPerformanceResponse]): Top team's performance metrics
+    """
+    team: Optional[TeamPerformanceResponse] = None
+
     
 
 class StdResponse(BaseModel):
