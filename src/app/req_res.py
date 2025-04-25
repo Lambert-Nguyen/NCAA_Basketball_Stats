@@ -97,15 +97,19 @@ class TeamPerformanceRequest(BaseModel):
     """Request model for team performance analysis.
     
     Attributes:
-        season (int): The season year to analyze (default: 2015)
-        team_name (Optional[str]): Name of the team to analyze
-        limit (Optional[int]): Number of teams to return (default: 10)
-        query_type (Optional[str]): Type of analysis (default: "all")
+        season (Optional[int]): Single season year to analyze
+        seasons (Optional[List[int]]): List of season years for comparison
+        team_name (Optional[str]): Name of a single team to analyze
+        team_names (Optional[List[str]]): List of team names for head-to-head
+        limit (Optional[int]): Number of teams to return
+        query_type (Optional[str]): Type of analysis ("all", "offensive", "defensive")
     """
-    season: int = 2015
+    season: Optional[int] = None
+    seasons: Optional[List[int]] = None
     team_name: Optional[str] = None
+    team_names: Optional[List[str]] = None
     limit: Optional[int] = 10
-    query_type: Optional[str] = "all"  # can be "all", "offensive", or "defensive"
+    query_type: Optional[str] = "all"
 
 class TeamPerformanceResponse(BaseModel):
     """Response model for team performance metrics.
@@ -141,9 +145,9 @@ class TopTeamsResponse(BaseModel):
     """Response model for top teams list.
     
     Attributes:
-        team (Optional[TeamPerformanceResponse]): Top team's performance metrics
+        teams (List[TeamPerformanceResponse]): List of top team performance metrics
     """
-    team: Optional[TeamPerformanceResponse] = None
+    teams: List[TeamPerformanceResponse] = []
 
     
 

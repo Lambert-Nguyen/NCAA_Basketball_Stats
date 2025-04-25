@@ -10,6 +10,7 @@ from .req_res import TeamPerformanceListResponse, TopTeamsResponse, TeamPerforma
 
 from google.cloud import bigquery
 
+
 class Service:
     def __init__(self, client : ConfigureBigQuery):
         self.client = client
@@ -65,12 +66,18 @@ class Service:
     def get_team_performance(self, request: TeamPerformanceRequest) -> TeamPerformanceListResponse:
         try:
             query = TeamPerformanceQuery(request_obj=request)
+            query_str = query.get_query()
+            params = query.get_query_params()
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
-                    bigquery.ScalarQueryParameter("season", "INT64", request.season)
+                    bigquery.ScalarQueryParameter(name, "INT64", value) if name == "season" else
+                    bigquery.ArrayQueryParameter(name, "INT64", value) if name == "seasons" else
+                    bigquery.ScalarQueryParameter(name, "STRING", value) if name == "team_name" else
+                    bigquery.ArrayQueryParameter(name, "STRING", value)
+                    for name, value in params.items()
                 ]
             )
-            result = self.client.execute_query(query=query.get_query(), job_config=job_config)
+            result = self.client.execute_query(query=query_str, job_config=job_config)
             return {"teams": [dict(row) for row in result]}
         except Exception as e:
             raise e
@@ -78,13 +85,17 @@ class Service:
     def analyze_team_performance(self, request: TeamPerformanceRequest) -> TeamPerformanceResponse:
         try:
             query = TeamPerformanceQuery(request_obj=request)
+            query_str = query.get_query()
+            params = query.get_query_params()
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
-                    bigquery.ScalarQueryParameter("season", "INT64", request.season),
-                    bigquery.ScalarQueryParameter("team_name", "STRING", request.team_name)
+                    bigquery.ScalarQueryParameter(name, "INT64", value) if name == "season" else
+                    bigquery.ArrayQueryParameter(name, "INT64", value) if name == "seasons" else
+                    bigquery.ScalarQueryParameter(name, "STRING", value)
+                    for name, value in params.items()
                 ]
             )
-            result = self.client.execute_query(query=query.get_query(), job_config=job_config)
+            result = self.client.execute_query(query=query_str, job_config=job_config)
             result_list = list(result)
             return {"team": dict(result_list[0]) if result_list else None}
         except Exception as e:
@@ -94,15 +105,18 @@ class Service:
         try:
             request.query_type = "offensive"
             query = TeamPerformanceQuery(request_obj=request)
+            query_str = query.get_query()
+            params = query.get_query_params()
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
-                    bigquery.ScalarQueryParameter("season", "INT64", request.season),
-                    bigquery.ScalarQueryParameter("limit", "INT64", request.limit)
+                    bigquery.ScalarQueryParameter(name, "INT64", value) if name == "season" else
+                    bigquery.ArrayQueryParameter(name, "INT64", value) if name == "seasons" else
+                    bigquery.ScalarQueryParameter(name, "INT64", value)
+                    for name, value in params.items()
                 ]
             )
-            result = self.client.execute_query(query=query.get_query(), job_config=job_config)
-            result_list = list(result)
-            return {"team": dict(result_list[0]) if result_list else None}
+            result = self.client.execute_query(query=query_str, job_config=job_config)
+            return {"teams": [dict(row) for row in result]}
         except Exception as e:
             raise e
 
@@ -110,16 +124,17 @@ class Service:
         try:
             request.query_type = "defensive"
             query = TeamPerformanceQuery(request_obj=request)
+            query_str = query.get_query()
+            params = query.get_query_params()
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
-                    bigquery.ScalarQueryParameter("season", "INT64", request.season),
-                    bigquery.ScalarQueryParameter("limit", "INT64", request.limit)
+                    bigquery.ScalarQueryParameter(name, "INT64", value) if name == "season" else
+                    bigquery.ArrayQueryParameter(name, "INT64", value) if name == "seasons" else
+                    bigquery.ScalarQueryParameter(name, "INT64", value)
+                    for name, value in params.items()
                 ]
             )
-            result = self.client.execute_query(query=query.get_query(), job_config=job_config)
-            result_list = list(result)
-            return {"team": dict(result_list[0]) if result_list else None}
+            result = self.client.execute_query(query=query_str, job_config=job_config)
+            return {"teams": [dict(row) for row in result]}
         except Exception as e:
-            raise e 
-        
-    
+            raise e
