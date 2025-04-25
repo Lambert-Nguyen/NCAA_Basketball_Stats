@@ -31,3 +31,14 @@ class TeamCode(BaseModel):
         can be found here: https://stats.ncaa.org/game_upload/team_codes
     """
     ncaa_code: int
+
+class Player3PTFGStats(BaseModel):
+    
+    """
+    Model for storing a player's 3pt FG stats
+    
+    """
+    full_name: str
+    threes_pct: float
+    threes_made: int
+    threes_att: int
