@@ -1,6 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel
-from .models import PlayerName, TeamCode
+from .models import PlayerName, TeamCode, Player3PTFGStats
 
 """ Add req res models here """
 
@@ -65,15 +65,9 @@ class PlayerNameListRespone(BaseModel):
 
 class HistoricalWinLossRequest(BaseModel):
     """
-    Request model for comparing two players.
-
-    This model is used to encapsulate the names of the two players 
-    that will be compared using the PlayerComparisonQuery. It ensures 
-    that the player names are provided in a structured and validated manner.
-
-    Attributes:
-        player1_name (PlayerName): The full name of the first player.
-        player2_name (PlayerName): The full name of the second player.
+    Request model for comparing two team's win-loss
+    
+    Team Code from NCAA
     """
     team1_code: TeamCode
     team2_code: TeamCode
@@ -81,6 +75,23 @@ class HistoricalWinLossRequest(BaseModel):
 
 
 class HistoricalWinLossResults(BaseModel):
+    """
+    Data model for win-loss results.
+    """
+    
+    wins: Optional[int] = None
+    losses: Optional[int] = None
+    
+    
+class ThreePointPercentRequest(BaseModel):
+    """
+    Request for getting three-point percentage leaders in a given season with at least min_shots attempts
+    """
+    season: int = 2015
+    minimum_shots: int = 10
+    
+
+class ThreePointPercentResult(BaseModel):
     """
     Data model for player comparison results.
 
@@ -90,8 +101,8 @@ class HistoricalWinLossResults(BaseModel):
     comparison data in a structured format.
     """
     
-    wins: Optional[int] = None
-    losses: Optional[int] = None
+    players: List[Player3PTFGStats] = None
+
 
 class TeamPerformanceRequest(BaseModel):
     """Request model for team performance analysis.

@@ -3,6 +3,7 @@ from src.client.configure_bq import ConfigureBigQuery
 from src.queries.fetch_names_query import FetchAllPlayerNamesQuery
 from src.queries.player_compare import PlayerComparisonQuery, PlayerComparisonRequest
 from src.queries.historical_win_loss import HistoricalWinLossQuery, HistoricalWinLossRequest
+from src.queries.three_point_percent import ThreePointPercentRequest, ThreePointPercentQuery
 from src.queries.team_performance import TeamPerformanceQuery, TeamPerformanceRequest
 from .models import PlayerName
 from .req_res import PlayerComparisonResult
@@ -59,6 +60,24 @@ class Service:
             result = self.client.execute_query(query=query.get_query(), job_config=job_config)
     
             return [dict(row) for row in result] 
+    
+        except Exception as e :
+            raise e 
+        
+    
+    def three_point_percent(self, request: ThreePointPercentRequest):
+        try:
+            query = ThreePointPercentQuery(request_obj=request)
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("season", "INT64", request.season),
+                    bigquery.ScalarQueryParameter("minimum_shots", "INT64", request.minimum_shots),
+
+                ]
+            )
+            result = self.client.execute_query(query=query.get_query(), job_config=job_config)
+    
+            return [dict(row) for row in result]
     
         except Exception as e :
             raise e 
