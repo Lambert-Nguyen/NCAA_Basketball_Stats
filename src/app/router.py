@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from .service import Service
+from src.apis.fetch_player_seasons import include_route as include_player_seasons
 
 class BaseRouter:
     def __init__(self, service: Service, prefix: str, tags: list[str]) -> None:
@@ -19,5 +20,5 @@ class BaseRouter:
         compare_players.include_route(self)
         historical_win_loss.include_route(self)
         team_performance.include_route(self)
-        
+        include_player_seasons(self)        
         return self.router

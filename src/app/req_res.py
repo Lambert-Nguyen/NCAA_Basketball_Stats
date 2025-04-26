@@ -156,3 +156,30 @@ class StdResponse(BaseModel):
     
     class Config:
         extra = "forbid"
+        
+class PlayerSeasonsRequest(BaseModel):
+    """
+    GET /player/{player_name}/seasons
+    """
+    player_name: str
+    start_year: Optional[int] = None
+    end_year:   Optional[int] = None
+
+
+class PlayerSeasonStats(BaseModel):
+    player_name:   str
+    season_year:   int
+    games_played:  int
+    total_points:  int
+    avg_points:    float
+    total_rebounds:  int
+    avg_rebounds:    float
+    total_assists:   int
+    avg_assists:     float
+    total_steals:    int
+    avg_steals:      float
+    total_blocks:    int
+    avg_blocks:      float
+
+class PlayerSeasonsResponse(BaseModel):
+    seasons: List[PlayerSeasonStats]
