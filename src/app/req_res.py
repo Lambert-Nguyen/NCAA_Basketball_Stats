@@ -1,6 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel
-from .models import PlayerName, TeamCode
+from .models import PlayerName, TeamCode, Player3PTFGStats
 
 """ Add req res models here """
 
@@ -65,15 +65,9 @@ class PlayerNameListRespone(BaseModel):
 
 class HistoricalWinLossRequest(BaseModel):
     """
-    Request model for comparing two players.
-
-    This model is used to encapsulate the names of the two players 
-    that will be compared using the PlayerComparisonQuery. It ensures 
-    that the player names are provided in a structured and validated manner.
-
-    Attributes:
-        player1_name (PlayerName): The full name of the first player.
-        player2_name (PlayerName): The full name of the second player.
+    Request model for comparing two team's win-loss
+    
+    Team Code from NCAA
     """
     team1_code: TeamCode
     team2_code: TeamCode
@@ -81,6 +75,23 @@ class HistoricalWinLossRequest(BaseModel):
 
 
 class HistoricalWinLossResults(BaseModel):
+    """
+    Data model for win-loss results.
+    """
+    
+    wins: Optional[int] = None
+    losses: Optional[int] = None
+    
+    
+class ThreePointPercentRequest(BaseModel):
+    """
+    Request for getting three-point percentage leaders in a given season with at least min_shots attempts
+    """
+    season: int = 2015
+    minimum_shots: int = 10
+    
+
+class ThreePointPercentResult(BaseModel):
     """
     Data model for player comparison results.
 
@@ -90,22 +101,26 @@ class HistoricalWinLossResults(BaseModel):
     comparison data in a structured format.
     """
     
-    wins: Optional[int] = None
-    losses: Optional[int] = None
+    players: List[Player3PTFGStats] = None
+
 
 class TeamPerformanceRequest(BaseModel):
     """Request model for team performance analysis.
     
     Attributes:
-        season (int): The season year to analyze (default: 2015)
-        team_name (Optional[str]): Name of the team to analyze
-        limit (Optional[int]): Number of teams to return (default: 10)
-        query_type (Optional[str]): Type of analysis (default: "all")
+        season (Optional[int]): Single season year to analyze
+        seasons (Optional[List[int]]): List of season years for comparison
+        team_name (Optional[str]): Name of a single team to analyze
+        team_names (Optional[List[str]]): List of team names for head-to-head
+        limit (Optional[int]): Number of teams to return
+        query_type (Optional[str]): Type of analysis ("all", "offensive", "defensive")
     """
-    season: int = 2015
+    season: Optional[int] = None
+    seasons: Optional[List[int]] = None
     team_name: Optional[str] = None
+    team_names: Optional[List[str]] = None
     limit: Optional[int] = 10
-    query_type: Optional[str] = "all"  # can be "all", "offensive", or "defensive"
+    query_type: Optional[str] = "all"
 
 class TeamPerformanceResponse(BaseModel):
     """Response model for team performance metrics.
@@ -141,9 +156,9 @@ class TopTeamsResponse(BaseModel):
     """Response model for top teams list.
     
     Attributes:
-        team (Optional[TeamPerformanceResponse]): Top team's performance metrics
+        teams (List[TeamPerformanceResponse]): List of top team performance metrics
     """
-    team: Optional[TeamPerformanceResponse] = None
+    teams: List[TeamPerformanceResponse] = []
 
     
 
