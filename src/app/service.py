@@ -6,11 +6,13 @@ from src.queries.historical_win_loss import HistoricalWinLossQuery, HistoricalWi
 from src.queries.three_point_percent import ThreePointPercentRequest, ThreePointPercentQuery
 from src.queries.team_performance import TeamPerformanceQuery, TeamPerformanceRequest
 from src.queries.player_seasons import PlayerSeasonsQuery
+from src.queries.player_games_query import PlayerGamesQuery
+
 from .models import PlayerName
 from .req_res import PlayerComparisonResult
 from .req_res import TeamPerformanceListResponse, TopTeamsResponse, TeamPerformanceResponse
 from .req_res import PlayerSeasonsRequest, PlayerSeasonsResponse
-
+from .req_res import PlayerGamesRequest, PlayerGamesListResponse
 from google.cloud import bigquery
 
 
@@ -174,3 +176,16 @@ class Service:
             return {"seasons": [dict(r) for r in rows]}
         except Exception as e:
             raise e
+    
+    def get_player_games(self, request: PlayerGamesRequest) -> PlayerGamesListResponse:
+        query = PlayerGamesQuery(request)
+        job_config = bigquery.QueryJobConfig(
+            query_parameters=[
+                bigquery.ScalarQueryParameter("player_name", "STRING", request.player_name),
+                bigquery.ScalarQueryParameter("limit",       "INT64",  request.limit),
+                bigquery.ScalarQueryParameter("start_year",  "INT64",  request.start_year),
+                bigquery.ScalarQueryParameter("end_year",    "INT64",  request.end_year),
+            ]
+        )
+        result = self.client.execute_query(query.get_query(), job_config=job_config)
+        return {"games": [dict(row) for row in result]}
