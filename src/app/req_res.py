@@ -208,22 +208,22 @@ class PlayerGamesRequest(BaseModel):
 
 class PlayerGame(BaseModel):
     player_name: str
-    game_timestamp: datetime
-    minutes_played: int
-    points: int
-    rebounds: int
-    assists: int
-    steals: int
-    blocks: int
-    fgm: int
-    fga: int
-    fg_pct: float
-    three_pt_made: int
-    three_pt_att: int
-    three_pt_pct: float
-    ftm: int
-    fta: int
-    ft_pct: float
+    game_timestamp: Optional[datetime]
+    minutes_played: Optional[int]
+    points: Optional[int]
+    rebounds: Optional[int]
+    assists: Optional[int]
+    steals: Optional[int]
+    blocks: Optional[int]
+    fgm: Optional[int]
+    fga: Optional[int]
+    fg_pct:  Optional[float]
+    three_pt_made: Optional[int]
+    three_pt_att: Optional[int]
+    three_pt_pct: Optional[float]
+    ftm: Optional[int]
+    fta: Optional[int]
+    ft_pct: Optional[float]
 
 class PlayerGamesListResponse(BaseModel):
     games: List[PlayerGame]
