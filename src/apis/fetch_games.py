@@ -9,7 +9,7 @@ def include_route(base_router):
     @base_router.router.get(
         "/player/{player_name}/games",
         response_model=PlayerGamesListResponse,
-        summary="Recent games for one player"
+        summary="Play-by-play or per-game detail for one player"
     )
     def fetch_player_games(
         player_name: str,
