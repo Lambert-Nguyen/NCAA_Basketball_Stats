@@ -2,7 +2,7 @@ from .base_query import BaseQuery
 
 class PlayerGamesQuery(BaseQuery):
     def __init__(self, request_obj):
-        super().__init__(request_obj)
+        # super().__init__(request_obj)
         self.player_name = request_obj.player_name
         self.limit       = request_obj.limit
         self.start_year  = request_obj.start_year
