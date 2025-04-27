@@ -118,7 +118,7 @@ class Service:
             )
             result = self.client.execute_query(query=query_str, job_config=job_config)
             result_list = list(result)
-            return {"team": dict(result_list[0]) if result_list else None}
+            return {"teams": [dict(row) for row in result_list] if result_list else []}
         except Exception as e:
             raise e
 
