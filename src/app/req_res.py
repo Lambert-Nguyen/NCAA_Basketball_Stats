@@ -1,4 +1,5 @@
 from typing import Optional, List
+from datetime import datetime
 from pydantic import BaseModel
 from .models import PlayerName, TeamCode, Player3PTFGStats
 
@@ -206,3 +207,31 @@ class PlayerSeasonStats(BaseModel):
 
 class PlayerSeasonsResponse(BaseModel):
     seasons: List[PlayerSeasonStats]
+
+class PlayerGamesRequest(BaseModel):
+    player_name: str
+    limit: Optional[int] = 20
+    start_year: Optional[int] = None
+    end_year: Optional[int] = None
+
+class PlayerGame(BaseModel):
+    player_name: str
+    game_timestamp: Optional[datetime]
+    minutes_played: Optional[int]
+    points: Optional[int]
+    rebounds: Optional[int]
+    assists: Optional[int]
+    steals: Optional[int]
+    blocks: Optional[int]
+    fgm: Optional[int]
+    fga: Optional[int]
+    fg_pct:  Optional[float]
+    three_pt_made: Optional[int]
+    three_pt_att: Optional[int]
+    three_pt_pct: Optional[float]
+    ftm: Optional[int]
+    fta: Optional[int]
+    ft_pct: Optional[float]
+
+class PlayerGamesListResponse(BaseModel):
+    games: List[PlayerGame]
