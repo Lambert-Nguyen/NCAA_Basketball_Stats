@@ -122,8 +122,8 @@ class TeamPerformanceRequest(BaseModel):
     limit: Optional[int] = 10
     query_type: Optional[str] = "all"
 
-class TeamPerformanceResponse(BaseModel):
-    """Response model for team performance metrics.
+class TeamPerformanceMetrics(BaseModel):
+    """Model for individual team performance metrics.
     
     Attributes:
         team_name (str): Name of the team
@@ -144,6 +144,14 @@ class TeamPerformanceResponse(BaseModel):
     offensive_efficiency: Optional[float] = None
     defensive_efficiency: Optional[float] = None
 
+class TeamPerformanceResponse(BaseModel):
+    """Response model for team performance metrics.
+    
+    Attributes:
+        teams (List[TeamPerformanceMetrics]): List of team performance metrics for each season
+    """
+    teams: List[TeamPerformanceMetrics] = []
+
 class TeamPerformanceListResponse(BaseModel):
     """Response model for list of team performances.
     
@@ -156,9 +164,9 @@ class TopTeamsResponse(BaseModel):
     """Response model for top teams list.
     
     Attributes:
-        teams (List[TeamPerformanceResponse]): List of top team performance metrics
+        teams (List[TeamPerformanceMetrics]): List of top team performance metrics
     """
-    teams: List[TeamPerformanceResponse] = []
+    teams: List[TeamPerformanceMetrics] = []
 
     
 
