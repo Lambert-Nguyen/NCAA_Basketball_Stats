@@ -6,4 +6,4 @@
 *.ipynb linguist-detectable=false
 
 
-*.ipynb linguist-language=Python  # Alternative: count notebooks as Python
+*.ipynb linguist-language=Python 
