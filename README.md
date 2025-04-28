@@ -66,7 +66,6 @@ prediction = requests.post(
 json={
 "team1_name": "Duke",
 "team2_name": "North Carolina",
-"season": 2023
 }
 )
 print(prediction.json())
