@@ -1,4 +1,3 @@
-from .req_res import PlayerNameListRespone
 from src.client.configure_bq import ConfigureBigQuery
 from src.queries.fetch_names_query import FetchAllPlayerNamesQuery
 from src.queries.player_compare import PlayerComparisonQuery, PlayerComparisonRequest
@@ -7,20 +6,28 @@ from src.queries.three_point_percent import ThreePointPercentRequest, ThreePoint
 from src.queries.team_performance import TeamPerformanceQuery, TeamPerformanceRequest
 from src.queries.player_seasons import PlayerSeasonsQuery
 from src.queries.player_games_query import PlayerGamesQuery
+from src.queries.fetch_team_stats import FetchTeamStatsQuery
+from src.queries.fetch_historical_matchups import FetchHistoricalMatchups
+# from src.queries.fetch_all_teams import FetchAllTeamsQuery
 
-from .models import PlayerName
-from .req_res import PlayerComparisonResult
-from .req_res import TeamPerformanceListResponse, TopTeamsResponse, TeamPerformanceResponse
-from .req_res import PlayerSeasonsRequest, PlayerSeasonsResponse
-from .req_res import PlayerGamesRequest, PlayerGamesListResponse
+
+from .req_res import PlayerSeasonsRequest
+from .req_res import PlayerGamesRequest
+from .req_res import FetchTeamStatsRequest
+from .req_res import TeamComparisonRequest
 from google.cloud import bigquery
+from typing import Dict
+from pandas import DataFrame
+
 
 
 class Service:
-    def __init__(self, client : ConfigureBigQuery):
+    def __init__(self, client : ConfigureBigQuery, utils : Dict):
         self.client = client
+        self.team_mapping = utils.get("team_mapping")
+        self.predict_model = utils.get("prediction_model")
 
-    def fetch_player_names(self, result_size : int) -> PlayerNameListRespone:
+    def fetch_player_names(self, result_size : int):
         try :
             query = FetchAllPlayerNamesQuery(result_size=result_size)
             job_config = bigquery.QueryJobConfig(
@@ -86,7 +93,7 @@ class Service:
         except Exception as e :
             raise e 
 
-    def get_team_performance(self, request: TeamPerformanceRequest) -> TeamPerformanceListResponse:
+    def get_team_performance(self, request: TeamPerformanceRequest):
         try:
             query = TeamPerformanceQuery(request_obj=request)
             query_str = query.get_query()
@@ -105,7 +112,7 @@ class Service:
         except Exception as e:
             raise e
 
-    def analyze_team_performance(self, request: TeamPerformanceRequest) -> TeamPerformanceResponse:
+    def analyze_team_performance(self, request: TeamPerformanceRequest):
         try:
             query = TeamPerformanceQuery(request_obj=request)
             query_str = query.get_query()
@@ -124,7 +131,7 @@ class Service:
         except Exception as e:
             raise e
 
-    def get_top_offensive_teams(self, request: TeamPerformanceRequest) -> TopTeamsResponse:
+    def get_top_offensive_teams(self, request: TeamPerformanceRequest):
         try:
             request.query_type = "offensive"
             query = TeamPerformanceQuery(request_obj=request)
@@ -143,7 +150,7 @@ class Service:
         except Exception as e:
             raise e
 
-    def get_top_defensive_teams(self, request: TeamPerformanceRequest) -> TopTeamsResponse:
+    def get_top_defensive_teams(self, request: TeamPerformanceRequest):
         try:
             request.query_type = "defensive"
             query = TeamPerformanceQuery(request_obj=request)
@@ -162,7 +169,7 @@ class Service:
         except Exception as e:
             raise e
             
-    def get_player_seasons(self, req: PlayerSeasonsRequest) -> PlayerSeasonsResponse:
+    def get_player_seasons(self, req: PlayerSeasonsRequest):
         try:
             q = PlayerSeasonsQuery(request_obj=req)
             job_config = bigquery.QueryJobConfig(
@@ -177,15 +184,108 @@ class Service:
         except Exception as e:
             raise e
     
-    def get_player_games(self, request: PlayerGamesRequest) -> PlayerGamesListResponse:
-        query = PlayerGamesQuery(request)
-        job_config = bigquery.QueryJobConfig(
-            query_parameters=[
-                bigquery.ScalarQueryParameter("player_name", "STRING", request.player_name),
-                bigquery.ScalarQueryParameter("limit",       "INT64",  request.limit),
-                bigquery.ScalarQueryParameter("start_year",  "INT64",  request.start_year),
-                bigquery.ScalarQueryParameter("end_year",    "INT64",  request.end_year),
-            ]
-        )
-        result = self.client.execute_query(query.get_query(), job_config=job_config)
-        return {"games": [dict(row) for row in result]}
+    def get_player_games(self, request: PlayerGamesRequest):
+        try : 
+            query = PlayerGamesQuery(request)
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("player_name", "STRING", request.player_name),
+                    bigquery.ScalarQueryParameter("limit",       "INT64",  request.limit),
+                    bigquery.ScalarQueryParameter("start_year",  "INT64",  request.start_year),
+                    bigquery.ScalarQueryParameter("end_year",    "INT64",  request.end_year),
+                ]
+            )
+            result = self.client.execute_query(query.get_query(), job_config=job_config)
+            return {"games": [dict(row) for row in result]}
+        
+        except Exception as e :
+            raise e 
+
+
+    def predict_win_teams(self, team1_name: str, team2_name: str, season: int = 2017):
+        try:
+            # Get IDs from correct mapping
+            team1_id = self.team_mapping.get(team1_name)  # Ensure nested access
+            team2_id = self.team_mapping.get(team2_name)
+            
+            
+            if not team1_id or not team2_id:
+                raise ValueError("Team names not found")
+
+            # Build queries
+            team1_query = FetchTeamStatsQuery(FetchTeamStatsRequest(team_id=team1_id, season=season)).get_query()
+            team2_query = FetchTeamStatsQuery(FetchTeamStatsRequest(team_id=team2_id, season=season)).get_query()
+
+            
+            # Job configs
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("team_id", "STRING", team1_id),
+                    bigquery.ScalarQueryParameter("season", "INT64", season),
+                ]
+            )
+
+            # Execute queries
+            team1_stats = self.client.execute_query(
+                query=team1_query,
+                job_config=job_config
+            ).to_dataframe().iloc[0].to_dict()
+
+            job_config = bigquery.QueryJobConfig(  # Reuse config with new params
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("team_id", "STRING", team2_id),
+                    bigquery.ScalarQueryParameter("season", "INT64", season),
+                ]
+            )
+
+            team2_stats = self.client.execute_query(
+                query=team2_query,
+                job_config=job_config
+            ).to_dataframe().iloc[0].to_dict()
+
+            # Prediction
+            team1_stats['home_team'] = 1.0
+            team2_stats['home_team'] = 0.0
+            
+            team1_prob = self.predict_model.predict_proba(DataFrame([team1_stats]))[0][1]
+            team2_prob = self.predict_model.predict_proba(DataFrame([team2_stats]))[0][1]
+
+            request = TeamComparisonRequest(team1_id=team1_id, team2_id=team2_id, season=season)
+
+            fetch_historical_wins_query = FetchHistoricalMatchups(reqobj=request).get_query()
+
+            job_config_historical_query = bigquery.QueryJobConfig(
+                query_parameters=[
+                bigquery.ScalarQueryParameter("team1_id", "STRING", team1_id),
+                bigquery.ScalarQueryParameter("team2_id", "STRING", team2_id),
+                bigquery.ScalarQueryParameter("season", "INT64", season),
+                ]
+            )
+
+            return {
+                'team1': team1_name,
+                'team2': team2_name,
+                'team1_win_prob': round(team1_prob, 3),
+                'team2_win_prob': round(team2_prob, 3),
+                'historical_matchups': [self.client.execute_query(query=fetch_historical_wins_query, job_config=job_config_historical_query).to_dataframe().to_dict('records')]
+            }
+
+        except Exception as e:
+            raise ValueError(f"Prediction failed: {str(e)}")
+    
+
+
+    def fetch_all_teams(self):
+        try:
+            ''' Online version '''
+            '''
+            query = FetchAllTeamsQuery().get_query()
+            result = [dict(row) for row in self.client.execute_query(query=query)]
+            '''
+
+            ''' Offline version'''
+            result = self.team_mapping
+            return result
+            
+        except Exception as e :
+            raise e 

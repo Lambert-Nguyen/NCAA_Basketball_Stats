@@ -235,3 +235,20 @@ class PlayerGame(BaseModel):
 
 class PlayerGamesListResponse(BaseModel):
     games: List[PlayerGame]
+
+
+
+class TeamComparisonRequest(BaseModel):
+    team1_id : str 
+    team2_id: str
+    season : int
+
+
+class FetchTeamStatsRequest(BaseModel):
+    team_id : str 
+    season : int
+
+
+class WinPredictionRequest(BaseModel):
+    team1_name : str 
+    team2_name : str
