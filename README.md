@@ -34,7 +34,7 @@ cp /path/to/your-credentials.json ./gcp_credentials.json
 
 ### 5. Environment Configuration
 Create `.env` file with:
-```bash
+```env
 PROJECT_ID=your-gcp-project-id
 CRED_FILE_PATH=./gcp_credentials.json
 TEAM_NAME_MAP=./notebooks/team_mappings.json
