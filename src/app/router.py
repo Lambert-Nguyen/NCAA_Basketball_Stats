@@ -20,7 +20,9 @@ class BaseRouter:
             historical_win_loss,
             team_performance,
             three_point_percent,
-            fetch_games)
+            fetch_games,
+            predict_games_win,
+            fetch_all_teams)
 
         fetch_players.include_route(self)
         compare_players.include_route(self)
@@ -29,5 +31,9 @@ class BaseRouter:
         three_point_percent.include_route(self)
         include_player_seasons(self)
         fetch_games.include_route(self)
+        predict_games_win.include_route(self)
+        fetch_all_teams.include_route(self)
+        
+
 
         return self.router
