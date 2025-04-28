@@ -8,7 +8,7 @@ A REST API service for advanced NCAA basketball analytics using BigQuery, featur
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/NCAA_Basketball_Stats.git
+git clone https://github.com/kunal768/NCAA_Basketball_Stats.git
 cd NCAA_Basketball_Stats
 ```
 
