@@ -1,0 +1,9 @@
+# Language overrides
+*.py linguist-language=Python
+
+# File exclusions
+*.html linguist-detectable=false
+*.ipynb linguist-detectable=false
+
+
+*.ipynb linguist-language=Python  # Alternative: count notebooks as Python
