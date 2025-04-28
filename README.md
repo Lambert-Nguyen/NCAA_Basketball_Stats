@@ -88,7 +88,7 @@ print(prediction.json())
 
 ## 👥 Contributors
 
-- **Kunal Keshav Singh Sahni** - Project Core Setup - (Server, BaseQuery, BaseRouter), Queries - Fetch All Teams, Fetch Player Names, Player Comparison, ML Win Prediction Model, Win Prediction API
+- **Kunal Keshav Singh Sahni** - Project Core Setup - (Server, BaseQuery, BaseRouter), Queries - Fetch All Teams Query, Fetch Player Names Query, Player Comparison Query, Historical Matchups Query, Team Stats Query, ML Win Prediction Model, Respective API endpoints for queries
 - **Zach Kuo** – ADD
 - **Sonali Lonkar** – ADD
 - **Lambert-Nguyen** – ADD
