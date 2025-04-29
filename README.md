@@ -54,7 +54,7 @@ uvicorn main:app --reload
 ---
 
 ## 🛠️ API Features
-<img src = "public/dashboard.png" />
+<img src = "public/updated_dashboard.png" />
 
 ## Example API request 
 
