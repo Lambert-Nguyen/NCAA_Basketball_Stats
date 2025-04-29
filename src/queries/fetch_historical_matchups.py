@@ -27,7 +27,7 @@ class FetchHistoricalMatchups(BaseQuery):
         ON g.game_id = t2.game_id AND t1.team_id < t2.team_id
       WHERE ((t1.team_id = @team1_id AND t2.team_id = @team2_id)
           OR (t1.team_id = @team2_id AND t2.team_id = @team1_id))
-        AND g.season = @season
+        AND g.season <= @season
     )
     SELECT * FROM matchups
     """

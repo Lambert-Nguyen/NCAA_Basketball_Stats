@@ -289,3 +289,65 @@ class Service:
             
         except Exception as e :
             raise e 
+    
+    def fetch_team_stats(self, team_name : str, season : int):
+        try:
+            team_id = self.team_mapping.get(team_name) 
+            if not team_id:
+                raise ValueError("Team name not found")
+
+            # Build queries
+            team_query = FetchTeamStatsQuery(FetchTeamStatsRequest(team_id=team_id, season=season)).get_query()
+            
+            # Job configs
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("team_id", "STRING", team_id),
+                    bigquery.ScalarQueryParameter("season", "INT64", season),
+                ]
+            )
+
+            team_stats = self.client.execute_query(
+                query=team_query,
+                job_config=job_config
+            ).to_dataframe().iloc[0].to_dict()
+
+
+            return team_stats
+        
+        except Exception as e :
+            raise e 
+    
+    def fetch_historical_matchups(self, team1_name : str, team2_name : str, season : int):
+        try:
+             # Get IDs from correct mapping
+            team1_id = self.team_mapping.get(team1_name)  # Ensure nested access
+            team2_id = self.team_mapping.get(team2_name)
+            
+            
+            if not team1_id or not team2_id:
+                raise ValueError("Team names not found")
+
+
+            # Build queries
+            query = FetchHistoricalMatchups(TeamComparisonRequest(team1_id=team1_id, team2_id=team2_id, season=season)).get_query()
+            
+            # Job configs
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("team1_id", "STRING", team1_id),
+                    bigquery.ScalarQueryParameter("team2_id", "STRING", team2_id),
+                    bigquery.ScalarQueryParameter("season", "INT64", season),
+                ]
+            )
+
+            res = self.client.execute_query(
+                query=query,
+                job_config=job_config
+            ).to_dataframe().to_dict('records')
+
+
+            return res
+        
+        except Exception as e :
+            raise e 
