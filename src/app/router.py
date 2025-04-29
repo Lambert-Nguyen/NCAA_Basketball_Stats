@@ -22,7 +22,9 @@ class BaseRouter:
             three_point_percent,
             fetch_games,
             predict_games_win,
-            fetch_all_teams)
+            fetch_all_teams,
+            fetch_team_stats,
+            fetch_historical_matchups)
 
         fetch_players.include_route(self)
         compare_players.include_route(self)
@@ -33,6 +35,8 @@ class BaseRouter:
         fetch_games.include_route(self)
         predict_games_win.include_route(self)
         fetch_all_teams.include_route(self)
+        fetch_team_stats.include_route(self)
+        fetch_historical_matchups.include_route(self)
         
 
 

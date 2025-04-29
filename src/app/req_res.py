@@ -252,3 +252,13 @@ class FetchTeamStatsRequest(BaseModel):
 class WinPredictionRequest(BaseModel):
     team1_name : str 
     team2_name : str
+
+class FetchTeamStatsEndpointReq(BaseModel):
+    team_name : str 
+    season : int 
+
+
+class FetchHistoricalMatchupEndpointReq(BaseModel):
+    team1_name : str 
+    team2_name : str 
+    season : int
