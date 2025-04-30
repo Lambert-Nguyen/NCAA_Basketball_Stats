@@ -10,7 +10,7 @@ class HistoricalWinLossQuery(BaseQuery):
         self.ending_season : int = request_obj.ending_season
         self.build_query()
 
-    """ this query takes 7.74 MB to execute as tested """
+    """ this query takes 35.96 MB to execute as tested """
     def build_query(self) -> None:
         self.query = """
         SELECT 
