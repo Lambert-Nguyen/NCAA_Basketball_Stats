@@ -19,15 +19,16 @@ class HistoricalWinLossQuery(BaseQuery):
             COALESCE(SUM(CASE WHEN win THEN 0 ELSE 1 END)) as losses,
             opp_market as opposing_team
         FROM 
-            `bigquery-public-data.ncaa_basketball.mbb_historical_teams_games` 
+            `bigquery-public-data.ncaa_basketball.mbb_historical_teams_games`
         WHERE 
-            team_code = CAST(@team1_code AS string)
+            market="San Jose State University"
         AND 
-            opp_code = @team2_code
+            opp_market="San Diego State University"
         AND 
-            season >= @starting_season
-        AND 
-            season <= @ending_season
+            season >= 2000
+        AND
+            season <= 2014
+
         GROUP BY team, opposing_team
         LIMIT 1000
         """
