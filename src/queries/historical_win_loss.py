@@ -10,26 +10,22 @@ class HistoricalWinLossQuery(BaseQuery):
         self.ending_season : int = request_obj.ending_season
         self.build_query()
 
-    """ this query takes 35.96 MB to execute as tested """
+    """ this query takes 12.21 MB to execute as tested """
     def build_query(self) -> None:
         self.query = """
         SELECT 
-            market as team,
             COALESCE(SUM(CASE WHEN win THEN 1 ELSE 0 END)) as wins, 
             COALESCE(SUM(CASE WHEN win THEN 0 ELSE 1 END)) as losses,
-            opp_market as opposing_team
         FROM 
-            `bigquery-public-data.ncaa_basketball.mbb_historical_teams_games`
+            `bigquery-public-data.ncaa_basketball.mbb_historical_teams_games` 
         WHERE 
-            market="San Jose State University"
+            team_code = CAST(@team1_code AS string)
         AND 
-            opp_market="San Diego State University"
+            opp_code = @team2_code
         AND 
-            season >= 2000
-        AND
-            season <= 2014
-
-        GROUP BY team, opposing_team
+            season >= @starting_season
+        AND 
+            season <= @ending_season
         LIMIT 1000
         """
 
