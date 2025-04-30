@@ -72,6 +72,8 @@ class HistoricalWinLossRequest(BaseModel):
     """
     team1_code: TeamCode
     team2_code: TeamCode
+    starting_season: int
+    ending_season: int
 
 
 

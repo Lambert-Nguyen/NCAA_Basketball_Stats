@@ -65,7 +65,10 @@ class Service:
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
                     bigquery.ScalarQueryParameter("team1_code", "INT64", request.team1_code.ncaa_code),
-                     bigquery.ScalarQueryParameter("team2_code", "INT64", request.team2_code.ncaa_code)
+                     bigquery.ScalarQueryParameter("team2_code", "INT64", request.team2_code.ncaa_code),
+                     bigquery.ScalarQueryParameter("starting_season", "INT64", request.starting_season),
+                     bigquery.ScalarQueryParameter("ending_season", "INT64", request.ending_season)
+
                 ]
             )
             result = self.client.execute_query(query=query.get_query(), job_config=job_config)
