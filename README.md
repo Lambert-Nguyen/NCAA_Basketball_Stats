@@ -90,7 +90,7 @@ print(prediction.json())
 - **Kunal Keshav Singh Sahni** - Project Core Setup - (Server, BaseQuery, BaseRouter), Queries - Fetch All Teams Query, Fetch Player Names Query, Player Comparison Query, Historical Matchups Query, Team Stats Query, ML Win Prediction Model, Respective API endpoints for queries
 - **Zach Kuo** – Historical Win-Loss Query, Three-Point Percent Query, Respective API endpoints for queries
 - **Sonali Lonkar** – Team Performance Metrics Query with API Endpoints for getting team performance over the seasons, Analyze a team over the seasons, head-to-head analysis of multiple teams through the seasons, get top offensive/defensive teams. Optimization of query using partitioning
-- **Lambert-Nguyen** – ADD
+- **Phuong Duy Lam (Lambert) Nguyen** – Player Analytics feature: By-season aggregates (games played, scoring, rebounding, etc.), Game-by-game box-score endpoints (minutes, shooting splits, counting stats), FastAPI routing & request validation, End-to-end testing and example payloads.
 
 ---
 
