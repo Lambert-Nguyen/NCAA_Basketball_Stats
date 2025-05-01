@@ -30,7 +30,7 @@ pip install -r requirements.txt
 ```bash
 cp /path/to/your-credentials.json ./gcp_credentials.json
 ```
-3. To create a partition in a bigquery dataset, which is required to run team performance metrics APIs, you need to follow instructions from the pdf file "InstructionsForPartitioning.pdf".
+3. To create a partition in a bigquery dataset, which is required to run team performance metrics APIs, you need to follow instructions from the pdf file [InstructionsForPartitioning.pdf](./InstructionsForPartitioning.pdf)
 
 ### 5. Environment Configuration
 Create `.env` file with:
