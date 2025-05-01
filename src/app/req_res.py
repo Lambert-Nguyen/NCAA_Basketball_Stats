@@ -117,6 +117,7 @@ class TeamPerformanceRequest(BaseModel):
         team_names (Optional[List[str]]): List of team names for head-to-head
         limit (Optional[int]): Number of teams to return
         query_type (Optional[str]): Type of analysis ("all", "offensive", "defensive")
+        project_id str (Required) : project_id required for parition-optimization
     """
     season: Optional[int] = None
     seasons: Optional[List[int]] = None
@@ -124,6 +125,7 @@ class TeamPerformanceRequest(BaseModel):
     team_names: Optional[List[str]] = None
     limit: Optional[int] = 10
     query_type: Optional[str] = "all"
+    project_id : str = ""
 
 class TeamPerformanceMetrics(BaseModel):
     """Model for individual team performance metrics.

@@ -31,7 +31,8 @@ async def lifespan(app: FastAPI):
 
     utils = {
         "team_mapping" : team_mappings,
-        "prediction_model" : prediction_model
+        "prediction_model" : prediction_model,
+        "project_id" : project_id,
     }
 
     service = Service(client= client, utils=utils)

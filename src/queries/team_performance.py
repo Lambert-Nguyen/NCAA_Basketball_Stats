@@ -11,6 +11,7 @@ class TeamPerformanceQuery(BaseQuery):
         self.team_names: Optional[List[str]] = request_obj.team_names
         self.limit: Optional[int] = request_obj.limit or 100  # Default limit
         self.query_type: str = request_obj.query_type or "all"
+        self.project_id = request_obj.project_id
         self.validate_inputs()
         self.build_query()
 
@@ -26,6 +27,8 @@ class TeamPerformanceQuery(BaseQuery):
             raise ValueError("Query type must be 'all', 'offensive', or 'defensive'")
         if self.team_name and self.team_names:
             raise ValueError("Cannot specify both team_name and team_names")
+        if len(self.project_id) == 0 : 
+            raise ValueError("project id empty")
 
     def build_query(self) -> None:
         """Build parameterized query for team performance metrics."""
@@ -49,7 +52,7 @@ class TeamPerformanceQuery(BaseQuery):
               a_points_game AS points_allowed,
               (h_field_goals_att - h_offensive_rebounds + h_turnovers + 0.475 * h_free_throws_att) AS possessions
             FROM
-              `my-project-180b-456416.ncaa_basketball.optimized_mbb_games_sr`
+              `{project_id}.ncaa_basketball.optimized_mbb_games_sr`
             WHERE
               {season_filter}
               AND h_market IS NOT NULL
@@ -64,7 +67,7 @@ class TeamPerformanceQuery(BaseQuery):
               h_points_game AS points_allowed,
               (a_field_goals_att - a_offensive_rebounds + a_turnovers + 0.475 * a_free_throws_att) AS possessions
             FROM
-              `my-project-180b-456416.ncaa_basketball.optimized_mbb_games_sr`
+              `{project_id}.ncaa_basketball.optimized_mbb_games_sr`
             WHERE
               {season_filter}
               AND a_market IS NOT NULL
@@ -134,7 +137,8 @@ class TeamPerformanceQuery(BaseQuery):
             team_filter_home=team_filter_home,
             team_filter_away=team_filter_away,
             order_by=order_by,
-            limit=self.limit
+            limit=self.limit,
+            project_id = self.project_id,
         )
 
     def set_query_type(self, query_type: str) -> None:
