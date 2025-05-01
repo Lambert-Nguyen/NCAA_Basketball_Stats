@@ -106,4 +106,4 @@ Open an issue
 
 ---
 
-**Note**: All data comes from BigQuery's public NCAA dataset. Requires active internet connection for live queries.
+> **Note**: All data comes from BigQuery's public NCAA dataset. Requires active internet connection for live queries.
