@@ -30,11 +30,11 @@ class TeamPerformanceQuery(BaseQuery):
     def build_query(self) -> None:
         """Build parameterized query for team performance metrics."""
         base_query = """
-        WITH TeamStats AS (
+        WITH GameStats AS (
           SELECT
             team_name,
             season,
-            SUM(games_played) AS games_played,
+            COUNT(*) AS games_played,
             SUM(wins) AS wins,
             SUM(points_scored) AS total_points_scored,
             SUM(points_allowed) AS total_points_allowed,
@@ -43,41 +43,33 @@ class TeamPerformanceQuery(BaseQuery):
             SELECT
               h_market AS team_name,
               season,
-              COUNT(*) AS games_played,
-              SUM(CASE WHEN h_points_game > a_points_game THEN 1 ELSE 0 END) AS wins,
-              SUM(h_points_game) AS points_scored,
-              SUM(a_points_game) AS points_allowed,
-              SUM(h_field_goals_att - h_offensive_rebounds + h_turnovers + 0.475 * h_free_throws_att) AS possessions
+              1 AS games_played,
+              CASE WHEN h_points_game > a_points_game THEN 1 ELSE 0 END AS wins,
+              h_points_game AS points_scored,
+              a_points_game AS points_allowed,
+              (h_field_goals_att - h_offensive_rebounds + h_turnovers + 0.475 * h_free_throws_att) AS possessions
             FROM
-              `bigquery-public-data.ncaa_basketball.mbb_games_sr`
+              `my-project-180b-456416.ncaa_basketball.optimized_mbb_games_sr`
             WHERE
               {season_filter}
-              AND h_points_game IS NOT NULL
-              AND a_points_game IS NOT NULL
               AND h_market IS NOT NULL
               {team_filter_home}
-            GROUP BY
-              h_market, season
             UNION ALL
             SELECT
               a_market AS team_name,
               season,
-              COUNT(*) AS games_played,
-              SUM(CASE WHEN a_points_game > h_points_game THEN 1 ELSE 0 END) AS wins,
-              SUM(a_points_game) AS points_scored,
-              SUM(h_points_game) AS points_allowed,
-              SUM(a_field_goals_att - a_offensive_rebounds + a_turnovers + 0.475 * a_free_throws_att) AS possessions
+              1 AS games_played,
+              CASE WHEN a_points_game > h_points_game THEN 1 ELSE 0 END AS wins,
+              a_points_game AS points_scored,
+              h_points_game AS points_allowed,
+              (a_field_goals_att - a_offensive_rebounds + a_turnovers + 0.475 * a_free_throws_att) AS possessions
             FROM
-              `bigquery-public-data.ncaa_basketball.mbb_games_sr`
+              `my-project-180b-456416.ncaa_basketball.optimized_mbb_games_sr`
             WHERE
               {season_filter}
-              AND a_points_game IS NOT NULL
-              AND h_points_game IS NOT NULL
               AND a_market IS NOT NULL
               {team_filter_away}
-            GROUP BY
-              a_market, season
-          )
+          ) AS games
           GROUP BY
             team_name, season
         ),
@@ -94,7 +86,7 @@ class TeamPerformanceQuery(BaseQuery):
             ROUND(100 * total_points_scored / NULLIF(total_possessions, 0), 1) AS offensive_efficiency,
             ROUND(100 * total_points_allowed / NULLIF(total_possessions, 0), 1) AS defensive_efficiency
           FROM
-            TeamStats
+            GameStats
           WHERE
             total_possessions > 0
             AND games_played >= 10
