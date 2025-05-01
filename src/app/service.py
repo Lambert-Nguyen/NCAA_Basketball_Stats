@@ -26,6 +26,7 @@ class Service:
         self.client = client
         self.team_mapping = utils.get("team_mapping")
         self.predict_model = utils.get("prediction_model")
+        self.project_id = utils.get("project_id")
 
     def fetch_player_names(self, result_size : int):
         try :
@@ -98,6 +99,7 @@ class Service:
 
     def get_team_performance(self, request: TeamPerformanceRequest):
         try:
+            request.project_id = self.project_id
             query = TeamPerformanceQuery(request_obj=request)
             query_str = query.get_query()
             params = query.get_query_params()
@@ -117,6 +119,7 @@ class Service:
 
     def analyze_team_performance(self, request: TeamPerformanceRequest):
         try:
+            request.project_id = self.project_id
             query = TeamPerformanceQuery(request_obj=request)
             query_str = query.get_query()
             params = query.get_query_params()
@@ -136,6 +139,7 @@ class Service:
 
     def get_top_offensive_teams(self, request: TeamPerformanceRequest):
         try:
+            request.project_id = self.project_id
             request.query_type = "offensive"
             query = TeamPerformanceQuery(request_obj=request)
             query_str = query.get_query()
@@ -155,6 +159,7 @@ class Service:
 
     def get_top_defensive_teams(self, request: TeamPerformanceRequest):
         try:
+            request.project_id = self.project_id
             request.query_type = "defensive"
             query = TeamPerformanceQuery(request_obj=request)
             query_str = query.get_query()
