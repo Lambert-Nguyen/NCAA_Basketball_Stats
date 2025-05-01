@@ -30,7 +30,7 @@ pip install -r requirements.txt
 ```bash
 cp /path/to/your-credentials.json ./gcp_credentials.json
 ```
-
+3. To create a partition in a bigquery dataset, which is required to run team performance metrics APIs, you need to follow instructions from the pdf file "InstructionsForPartitioning.pdf".
 
 ### 5. Environment Configuration
 Create `.env` file with:
@@ -89,7 +89,7 @@ print(prediction.json())
 
 - **Kunal Keshav Singh Sahni** - Project Core Setup - (Server, BaseQuery, BaseRouter), Queries - Fetch All Teams Query, Fetch Player Names Query, Player Comparison Query, Historical Matchups Query, Team Stats Query, ML Win Prediction Model, Respective API endpoints for queries
 - **Zach Kuo** – Historical Win-Loss Query, Three-Point Percent Query, Respective API endpoints for queries
-- **Sonali Lonkar** – ADD
+- **Sonali Lonkar** – Team Performance Metrics Query with API Endpoints for getting team performance over the seasons, Analyze a team over the seasons, head-to-head analysis of multiple teams through the seasons, get top offensive/defensive teams. Optimization of query using partitioning
 - **Lambert-Nguyen** – ADD
 
 ---
